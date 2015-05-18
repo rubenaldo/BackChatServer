@@ -7,6 +7,7 @@ package comunicacao;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.List;
 import java.util.Scanner;
 import modelo.Mensagem;
 import parser.ParserMensagem;
@@ -19,7 +20,8 @@ import threads.Recebedor;
 public class Cliente extends Thread {
     private String host;
     private int porta;
-    private String msg;
+    private List<String> msg;
+    PrintStream saida;
     Socket cliente;
 //  public static void main(String[] args) 
 //         throws Exception {
@@ -33,9 +35,9 @@ public class Cliente extends Thread {
     
     public void enviarMensagem(Mensagem m) throws IOException{
         ParserMensagem parsermsg = new ParserMensagem();
-        msg = parsermsg.parserMensagemString(m);
-        PrintStream saida = new PrintStream(cliente.getOutputStream());
-        saida.println(msg);
+        msg.add(parsermsg.parserMensagemString(m));
+        saida = new PrintStream(cliente.getOutputStream());
+//        saida.println(msg);
     }
     @Override
     public void run() {
@@ -52,18 +54,18 @@ public class Cliente extends Thread {
             // lê msgs do teclado e manda pro servidor
 //            Scanner teclado = new Scanner(System.in);
 //            PrintStream saida = new PrintStream(cliente.getOutputStream());
-//            while (teclado.hasNextLine()) {
-//              saida.println(teclado.nextLine());
-//            }
+            while (msg.size()>0) {
+              saida.println(msg);
+            }
             Scanner teclado = new Scanner(host);
             
             while (teclado.hasNextLine()) {
               saida.println(msg);
             }
 
-            saida.close();
-            teclado.close();
-            cliente.close();
+//            saida.close();
+//            teclado.close();
+//            cliente.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

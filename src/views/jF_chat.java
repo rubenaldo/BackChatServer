@@ -7,9 +7,12 @@ package views;
 
 import comunicacao.Cliente;
 import comunicacao.Comunic;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import modelo.DAO;
 import modelo.Mensagem;
@@ -173,7 +176,11 @@ public class jF_chat extends javax.swing.JFrame {
         String mens = jTF_mensagem.getText();
         jTA_mensagens.append(usuario.getNome()+" diz: "+mens+"\n");
         Mensagem msg = new Mensagem(DAO.proximoIdMensagem(), mens, usuario, sala);
-        
+        try {
+            c.enviarMensagem(msg);
+        } catch (IOException ex) {
+            Logger.getLogger(jF_chat.class.getName()).log(Level.SEVERE, null, ex);
+        }
         limparTela();
     }//GEN-LAST:event_jB_enviarActionPerformed
 
