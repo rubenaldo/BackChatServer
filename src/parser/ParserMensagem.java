@@ -5,6 +5,7 @@
 package parser;
 
 
+import java.util.ArrayList;
 import modelo.Mensagem;
 import modelo.Sala;
 import modelo.Usuario;
@@ -16,27 +17,26 @@ import org.json.JSONObject;
  * @author adm
  */
 public class ParserMensagem {
+    ParserUsuario pUsuario;
     
     public String parserMensagemString(Mensagem mens) {
         JSONObject obj = new JSONObject();
         obj.put("id", mens.getId());
         obj.put("mensagem", mens.getMensagem());
-        obj.put("usuario_id", mens.getUsuario().getId());
-        obj.put("usuario_nome", mens.getUsuario().getNome());
-        obj.put("usuario_senha", mens.getUsuario().getSenha());
-        obj.put("sala_id", mens.getSala().getId());
-        obj.put("sala_nome", mens.getSala().getNome());
+        obj.put("usuario", mens.getUsuario());
+        obj.put("sala", mens.getSala());
         
-        JSONArray jsonArray = new JSONArray(mens.getSala().getListUsuarios());
-        obj.put("sala_usuarios", jsonArray);
-                
         return obj.toString();
+        
     }
 
     public Mensagem parserStringMensagem(String mensStr) {
         JSONObject obj = new JSONObject(mensStr);
         
-        Usuario usuario = new Usuario(obj.getInt("usuario_id"), obj.getString("usuario_nome"), obj.getString("usuario_senha"));
+//        JSONObject us = obj.getJSONObject("usuario");
+//        Usuario user = pUsuario.parserStringUsuario(us.toString());
+        Usuario usuario = pUsuario.parserStringUsuario(obj.getString("usuario"));
+        
         
         JSONArray jsonArray = new JSONArray(obj.getJSONArray("sala_usuarios"));
         
